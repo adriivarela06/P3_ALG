@@ -6,16 +6,20 @@ mkdir -p imagenes
 # 2. Configuración de rutas
 SRC_DIR="./src"
 DATA_DIR="./data"
+BIN_DIR="./bin"
 SUPPORT_FILES="$SRC_DIR/data_loader.cpp $SRC_DIR/plot_tour.cpp"
+
+# Crear carpeta de binarios si no existe
+mkdir -p "$BIN_DIR"
 
 echo "--- Compilando algoritmos ---"
 
 # Compilar Nearest Neighbor
-g++ $SRC_DIR/nearest_neighbor.cpp $SUPPORT_FILES -o nearest_neighbor.bin -O3 -I$SRC_DIR
+g++ $SRC_DIR/nearest_neighbor.cpp $SUPPORT_FILES -o "$BIN_DIR/nearest_neighbor.bin" -O3 -I$SRC_DIR
 if [ $? -ne 0 ]; then echo "✘ Error compilando NN"; exit 1; fi
 
 # Compilar Nearest Insertion
-g++ $SRC_DIR/nearest_insertion.cpp $SUPPORT_FILES -o nearest_insertion.bin -O3 -I$SRC_DIR
+g++ $SRC_DIR/nearest_insertion.cpp $SUPPORT_FILES -o "$BIN_DIR/nearest_insertion.bin" -O3 -I$SRC_DIR
 if [ $? -ne 0 ]; then echo "✘ Error compilando NI"; exit 1; fi
 
 echo "✔ Compilación exitosa."
@@ -31,11 +35,11 @@ for file in "$DATA_DIR"/*.tsp; do
 
     # Ejecutar Nearest Neighbor
     echo "[Ejecutando NN...]"
-    ./nearest_neighbor.bin "$file"
+    "$BIN_DIR/nearest_neighbor.bin" "$file"
 
     # Ejecutar Nearest Insertion
     echo "[Ejecutando NI...]"
-    ./nearest_insertion.bin "$file"
+    "$BIN_DIR/nearest_insertion.bin" "$file"
 
     # Mover imágenes generadas para esta instancia a la carpeta imagenes
     # El código usa el nombre de la instancia para el prefijo de la imagen
