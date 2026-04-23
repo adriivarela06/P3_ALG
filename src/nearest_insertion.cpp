@@ -17,7 +17,7 @@ pair<vector<int>, int> heuristic_nearest_insertion(
     vector<int> tour;
     vector<bool> visitado(n, false);
 
-    int actual = 0; // Empezamos en el primer nodo
+    int actual = 0;
     tour.push_back(actual);
     visitado[actual] = true;
 

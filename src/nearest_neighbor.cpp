@@ -6,6 +6,7 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include <climits>
 
 using namespace std;
 
@@ -17,17 +18,15 @@ pair<vector<int>, int> heuristic_nearest_neighbor(const vector<vector<int>>& dis
     vector<bool> visitado(n, false);
     int total_cost = 0;
 
-    int actual = 0; // Empezamos en el primer nodo
+    int actual = 0; 
     tour.push_back(actual);
     visitado[actual] = true;
 
-    // Buscamos el vecino más cercano n-1 veces
     for (int paso = 1; paso < n; ++paso) {
-        int min_dist = 1e9; // Un valor muy grande
+        int min_dist = INT_MAX; 
         int siguiente_ciudad = -1;
 
         for (int j = 0; j < n; ++j) {
-            // Si no ha sido visitado y es el más cercano
             if (!visitado[j] && distance_matrix[actual][j] < min_dist) {
                 min_dist = distance_matrix[actual][j];
                 siguiente_ciudad = j;
@@ -42,9 +41,7 @@ pair<vector<int>, int> heuristic_nearest_neighbor(const vector<vector<int>>& dis
         }
     }
 
-    // Volver al inicio para cerrar el tour
     total_cost += distance_matrix[actual][tour[0]];
-    tour.push_back(tour[0]); 
 
     return {tour, total_cost};
 }
