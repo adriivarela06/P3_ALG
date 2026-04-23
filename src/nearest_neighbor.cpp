@@ -6,16 +6,42 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include <climits>
 
 using namespace std;
 
 pair<vector<int>, int> heuristic_nearest_neighbor(const vector<vector<int>>& distance_matrix) {
-    /*
-     * TODO: Implement the Nearest Neighbor heuristic.
-     * Return: A pair containing the tour (vector of node indices) and the total tour cost.
-     */
+    int n = distance_matrix.size();
+    if (n == 0) return {{}, 0};
+
     vector<int> tour;
-    int total_cost = -1;
+    vector<bool> visitado(n, false);
+    int total_cost = 0;
+
+    int actual = 0; 
+    tour.push_back(actual);
+    visitado[actual] = true;
+
+    for (int paso = 1; paso < n; ++paso) {
+        int min_dist = INT_MAX; 
+        int siguiente_ciudad = -1;
+
+        for (int j = 0; j < n; ++j) {
+            if (!visitado[j] && distance_matrix[actual][j] < min_dist) {
+                min_dist = distance_matrix[actual][j];
+                siguiente_ciudad = j;
+            }
+        }
+
+        if (siguiente_ciudad != -1) { 
+            actual = siguiente_ciudad;
+            tour.push_back(actual);
+            visitado[actual] = true;
+            total_cost += min_dist;
+        }
+    }
+
+    total_cost += distance_matrix[actual][tour[0]];
 
     return {tour, total_cost};
 }
