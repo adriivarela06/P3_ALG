@@ -6,18 +6,67 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include <climits>
 
 using namespace std;
 
 pair<vector<int>, int> heuristic_nearest_insertion(
     const vector<vector<int>>& distance_matrix
 ) {
-    /*
-     * TODO: Implement the Nearest Insertion heuristic.
-     * Return: A pair containing the optimized tour and the total cost.
-     */
+    int n = distance_matrix.size();
     vector<int> tour;
-    int total_cost = -1;
+    vector<bool> visitado(n, false);
+
+    int actual = 0; // Empezamos en el primer nodo
+    tour.push_back(actual);
+    visitado[actual] = true;
+
+    int nodo_mas_cercano = -1;
+    int min_dist = INT_MAX;
+    for (int i=1; i<n; ++i){
+        if (distance_matrix[0][i] < min_dist){
+            min_dist = distance_matrix[0][i];
+            nodo_mas_cercano = i;
+        }
+    }
+    tour.push_back(nodo_mas_cercano);
+    visitado[nodo_mas_cercano] = true;
+
+    while (tour.size() < n){
+        int nodo_a_insertar;
+        int min_dist2 = INT_MAX;
+        for (int i=0; i<n; ++i){
+            if (!visitado[i]){
+                for(int j = 0; j<tour.size(); j++){
+                    int tour_n = tour[j];
+                    if (distance_matrix[i][tour_n] < min_dist2){
+                        min_dist2 = distance_matrix[i][tour_n];
+                        nodo_a_insertar = i;
+                    }
+                }
+            }
+        }
+        int mejor_pos = -1;
+        int menor_coste_inser = INT_MAX;
+
+        for (int i=0; i< tour.size(); i++){
+            int nodo_actual = tour[i];
+            int nodo_sig = tour[(i+1) % tour.size()];
+
+            int coste = distance_matrix[nodo_actual][nodo_a_insertar] + distance_matrix[nodo_a_insertar][nodo_sig] - distance_matrix[nodo_actual][nodo_sig];
+            if (coste < menor_coste_inser){
+                menor_coste_inser = coste;
+                mejor_pos = i + 1;
+            }
+        }
+        tour.insert(tour.begin() + mejor_pos, nodo_a_insertar);
+        visitado[nodo_a_insertar] = true;
+    }
+
+    int total_cost = 0;
+    for (int i=0; i<tour.size(); i++){
+        total_cost += distance_matrix[tour[i]][tour[(i+1) % tour.size()]];
+    }
 
     return {tour, total_cost};
 }
